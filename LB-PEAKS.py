@@ -187,11 +187,11 @@ def H_4(message:array, n:int, m:int) -> array:
 	sha256_hash.update(message_bytes)
 	hash_value = sha256_hash.digest()
 	hash_string = "".join(format(byte, "08b") for byte in hash_value)
-	hash_list = [int(bit) for bit in hash_string][:(n * (n - 1)) >> 1] # let hash_list has a maximum length of n(n - 1) / 2 to fill the hash value in the upper right corner of the matrix
-	hash_list += [0] * (((n * (n - 1)) >> 1) - len(hash_list)) # fill into n(n - 1) / 2
-	hash_array = eye(m, dtype = "int") # make the eye matrix
-	hash_array[triu_indices(n, k = 1)] = hash_list # fill the hash value in the upper right corner of the matrix
-	return concatenate((hash_array, zeros((n, m - n), dtype = "int")), axis = 1) # fill to form a  n * m matrix
+	hash_list = [int(bit) for bit in hash_string][:((n * (n - 1)) >> 1) + n * (m - n)] # let hash_list has a maximum length of n(n - 1) / 2 + n(m - n) to fill the hash value in the upper right corner of the matrix
+	hash_list += [0] * (((n * (n - 1)) >> 1) + n * (m - n) - len(hash_list)) # fill into mn - n(n + 1) / 2
+	hash_array = eye(n, dtype = "int") # make the eye matrix
+	hash_array[triu_indices(n, k = 1)] = hash_list[:(n * (n - 1)) >> 1] # fill the hash value in the upper right corner of the matrix
+	return concatenate((hash_array, array(hash_list[(n * (n - 1)) >> 1:], dtype = "int").reshape(n, m - n)), axis = 1) # fill to form a  n * m matrix
 
 def SamplePre(A:array, T_A:array, hash_value:array, q:int) -> array:
 	return dot(A.T, hash_value) % q
