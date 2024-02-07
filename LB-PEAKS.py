@@ -1,15 +1,25 @@
 from sys import argv, exit
+from collections import OrderedDict
 from datetime import datetime
 from hashlib import sha256
 from math import log2
 from pytz import timezone
 from time import sleep, time
 try:
-	from numpy import arange, array, concatenate, dot, eye, fill_diagonal, kron, sum as np_sum, triu_indices, zeros
-	from numpy.linalg import lstsq, matrix_rank
+	from numpy import arange, array, asarray, concatenate, dot, eye, fill_diagonal, kron, sum as np_sum, triu_indices, zeros
+	from numpy.linalg import matrix_rank
 	from numpy.random import randint
 except Exception as e:
 	print("Please install the library named \"numpy\" properly before this script can be run. ")
+	print("Exception(s): ")
+	print(e)
+	print("Please press enter key to exit. ")
+	input()
+	exit(-1)
+try:
+	from sympy import Matrix
+except Exception as e:
+	print("Please install the library named \"sympy\" properly before this script can be run. ")
 	print("Exception(s): ")
 	print(e)
 	print("Please press enter key to exit. ")
@@ -23,9 +33,10 @@ MAX_WIDTH = 20
 DEFAULT_N = 256
 DEFAULT_M = 9728
 DEFAULT_Q = 4093
-RAND_LB = 2
+RAND_LB = 1
 RAND_UB = 16
-parameters = [{"n":256, "m":9728, "q":4093}, {"n":320, "m":13120, "q":8191}] # Users should only modify the parameters here in this line to accomplish their experiments. 
+parameters = [{"n":16, "m":608, "q":251}, {"n":20, "m":800, "q":509}, {"n":256, "m":9728, "q":4093}, {"n":320, "m":12800, "q":8191}] # Users should only modify the parameters here in this line and the next line to accomplish their experiments. 
+procedures = [("Setup", lambda p, j:Setup(p, j), 1, 1), ("KeyGen", lambda p, j:KeyGen(p, j), 10, 100), ("Authorize", lambda p, j:Authorize(p, j), 1, 1), ("Encrypt", lambda p, j:Encrypt(p, j), 100, 1000), ("Trapdoor", lambda p, j:Trapdoor(p, j), 100, 1000), ("Test", lambda p, j:Test(p, j), 100, 1000)]
 
 
 # Class #
@@ -194,7 +205,7 @@ def H_4(message:array, n:int, m:int) -> array:
 	return concatenate((hash_array, array(hash_list[(n * (n - 1)) >> 1:], dtype = "int").reshape(n, m - n)), axis = 1) # fill to form a  n * m matrix
 
 def SamplePre(A:array, T_A:array, hash_value:array, q:int) -> array:
-	return dot(A.T, hash_value) % q
+	return dot(dot(A.T, asarray(Matrix(dot(A, A.T)).inv_mod(q)).astype("int")) % q, hash_value) % q
 
 def f(sk_ID:array, kw:array, message:array, k:int, q:int) -> array:
 	return (sk_ID + np_sum(kw[:k] * message[:k]) % q) % q
@@ -215,20 +226,20 @@ def F(sk_ID:array, KS_U:array, KS_W:array, message:array, k:int, q:int) -> array
 	return (f_1(sk_ID, KS_U, message, k, q) - f_2(sk_ID, KS_W, message, k, q)) % q
 
 def ExtBasis(F_B0:array, T_B0:array, B_0:array, q:int) -> array:
-	W = lstsq(B_0, F_B0, rcond = None)[0].astype("int") % q
+	W = dot(dot(B_0.T, asarray(Matrix(dot(B_0, B_0.T)).inv_mod(q)).astype("int")) % q, F_B0) % q
 	T = concatenate((concatenate((T_B0, W), axis = 1), concatenate((zeros((W.shape[1], T_B0.shape[1]), dtype = "int"), eye(W.shape[1], dtype = "int")), axis = 1)), axis = 0)
 	return T
 
 def SampleLeft(A:array, B:array, C_u:array, T_A:array, q:int) -> array: # converted from https://www.iacr.org/archive/asiacrypt2011/70730021/70730021.pdf
 	E_S = zeros((A.shape[1], C_u.shape[1]), dtype = "int")
 	for j in range(C_u.shape[1]):
-		E_S[:, j] = lstsq(A, C_u[:, j], rcond = None)[0].astype("int") % q
+		E_S[:, j] = dot(dot(A.T, asarray(Matrix(dot(A, A.T)).inv_mod(q)).astype("int")) % q, C_u[:, j]) % q
 	return E_S
 
 
 # Procedure Functions #
-def Setup(pars_dict:dict) -> PARS:
-	print("/* Setup */")
+def Setup(pars_dict:dict, round:int) -> PARS:
+	print("/* Setup (Round {0}) */".format(round))
 	pars = PARS(**pars_dict)
 	n = pars.getN()
 	m = pars.getM()
@@ -254,8 +265,8 @@ def Setup(pars_dict:dict) -> PARS:
 	print()
 	return pars
 
-def KeyGen(pars:PARS) -> PARS:
-	print("/* KeyGen */")
+def KeyGen(pars:PARS, round:int) -> PARS:
+	print("/* KeyGen (Round {0}) */".format(round))
 	n = pars.getN()
 	m = pars.getM()
 	q = pars.getQ()
@@ -271,8 +282,8 @@ def KeyGen(pars:PARS) -> PARS:
 	print()
 	return pars
 
-def Authorize(pars:PARS) -> PARS:
-	print("/* Authorize */")
+def Authorize(pars:PARS, round:int) -> PARS:
+	print("/* Authorize (Round {0}) */".format(round))
 	n = pars.getN()
 	m = pars.getM()
 	q = pars.getQ()
@@ -298,8 +309,8 @@ def Authorize(pars:PARS) -> PARS:
 	print()
 	return pars
 
-def Encrypt(pars:PARS) -> PARS:
-	print("/* Encrypt */")
+def Encrypt(pars:PARS, round:int) -> PARS:
+	print("/* Encrypt (Round {0}) */".format(round))
 	n = pars.getN()
 	m = pars.getM()
 	q = pars.getQ()
@@ -326,8 +337,8 @@ def Encrypt(pars:PARS) -> PARS:
 	print()
 	return pars
 
-def Trapdoor(pars:PARS) -> PARS:
-	print("/* Trapdoor */")
+def Trapdoor(pars:PARS, round:int) -> PARS:
+	print("/* Trapdoor (Round {0}) */".format(round))
 	n = pars.getN()
 	m = pars.getM()
 	q = pars.getQ()
@@ -343,7 +354,7 @@ def Trapdoor(pars:PARS) -> PARS:
 	sigma = pars.getSigma()
 	A_kw = (np_sum(kw[:, :, None] * vec_M, axis = 0) % q + B) % q # size = (n, 2m)
 	A_ID = concatenate((A, H_4(ID, n, m)), axis = 1) % q # size = (n, 2m)
-	T_A_ID = randint(q, size = (m << 1, m << 1)) # ExtBasis(T_A, A_ID) # size = (2m, 2m)
+	T_A_ID = randint(q, size = (m << 1, m << 1)) # ExtBasis(A_ID, T_A, A) # size = (2m, 2m)
 	trap_1 = dot(SK_ID, y) % q # size = (m, 1)
 	trap_2 = randint(q, size = (m << 2, 1)) # SampleLeft(A_ID, A_kw, T_A_ID, U, q) # size = (4m, 1)
 	Trap = (trap_1, trap_2, sigma)
@@ -352,10 +363,9 @@ def Trapdoor(pars:PARS) -> PARS:
 	print()
 	return pars
 
-def Test(pars:PARS) -> bool:
-	print("/* Test */")
+def Test(pars:PARS, round:int) -> bool:
+	print("/* Test (Round {0}) */".format(round))
 	n = pars.getN()
-	m = pars.getM()
 	q = pars.getQ()
 	A = pars.getA() # size = (n, m)
 	ID = pars.getID() # size = (l, 1)
@@ -368,7 +378,7 @@ def Test(pars:PARS) -> bool:
 	sigma = Trap[2]
 	h = sigma[0]
 	z = sigma[1] # size = (m, 1)
-	bRet = (h == H_2(concatenate(((dot(A, z) - H_1(ID, q, n) * h % q) % q, trap_1), axis = 0), q)) and matrix_rank(z) <= (s << 1) * m ** 0.5 and matrix_rank((c_0 - dot(trap_2.T, c_1) % q) % q) <= q >> 2
+	bRet = (h == H_2(concatenate(((dot(A, z) - H_1(ID, q, n) * h % q) % q, trap_1), axis = 0), q)) and matrix_rank((c_0 - dot(trap_2.T, c_1) % q) % q) <= q >> 2
 	print(int(bRet))
 	print()
 	return bRet
@@ -461,57 +471,33 @@ def main() -> int:
 		print("Parameters resolved from commandline: {0}".format(commandlineArgument))
 		parameters.append(commandlineArgument)
 	print("Parameters: {0}".format(parameters), end = "\n" * 3)
-	lists = [["Procedure", "n", "m", "q", "Time (s)"]]
 	
+	orderedDict = OrderedDict()
+	for procedure in procedures:
+		orderedDict[procedure[0]] = OrderedDict()
+	bRet = True
 	for parameter in parameters:
+		key = (parameter["n"] if "n" in parameter else DEFAULT_N, parameter["m"] if "m" in parameter else DEFAULT_M, parameter["q"] if "q" in parameter else DEFAULT_Q)
 		print("/** parameter = {0} **/".format(parameter))
-		start_time = time()
-		pars = Setup(parameter)
-		end_time = time()
-		lists.append(["Setup", pars.getN(), pars.getM(), pars.getQ(), end_time - start_time])
-		
-		start_time = time()
-		pars = KeyGen(pars)
-		end_time = time()
-		lists.append(["KeyGen", pars.getN(), pars.getM(), pars.getQ(), end_time - start_time])
-		
-		start_time = time()
-		pars = Authorize(pars)
-		end_time = time()
-		lists.append(["Authorize", pars.getN(), pars.getM(), pars.getQ(), end_time - start_time])
-		
-		start_time = time()
-		pars = Encrypt(pars)
-		end_time = time()
-		lists.append(["Encrypt", pars.getN(), pars.getM(), pars.getQ(), end_time - start_time])
-		
-		start_time = time()
-		pars = Trapdoor(pars)
-		end_time = time()
-		lists.append(["Trapdoor", pars.getN(), pars.getM(), pars.getQ(), end_time - start_time])
-		
-		start_time = time()
-		bRet = Test(pars)
-		end_time = time()
-		lists.append(["Test", pars.getN(), pars.getM(), pars.getQ(), end_time - start_time])
-		
+		for i, procedure in enumerate(procedures):
+			orderedDict[procedure[0]][key] = OrderedDict()
+			start_time = time()
+			for j in range(1, procedure[-1] + 1):
+				if 0 == i:
+					pars = procedure[1](parameter, j)
+				elif len(procedures) - 1 == i:
+					bRet = procedure[1](pars, j) and bRet
+				else:
+					pars = procedure[1](pars, j)
+				if j % procedure[-2] == 0:
+					end_time = time()
+					orderedDict[procedure[0]][key][j] = end_time - start_time
 		print()
-	
-	if len(lists) <= 1:
-		print("No experimental results are collected. ")
-	elif len(lists) == 2:
-		print("The experimental result of the time consumption in seconds is shown as follows. ")
-		for line in lists:
-			for item in line:
-				print("{{0:{0}}}".format(MAX_WIDTH).format(item), end = "")
-			print()
-	else:
 		print("The experimental results of the time consumption in seconds are shown as follows. ")
-		for line in lists:
-			for item in line:
-				print("{{0:{0}}}".format(MAX_WIDTH).format(item), end = "")
-			print()
-			
+		print(orderedDict)
+		print()
+	print()
+	
 	preExit()
 	print("\n\n\nProgram ended at {0} with exit code {1}. ".format(getCurrentTime(), EXIT_SUCCESS if bRet else EXIT_FAILURE))
 	return EXIT_SUCCESS if bRet else EXIT_FAILURE
