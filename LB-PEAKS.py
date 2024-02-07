@@ -36,7 +36,7 @@ DEFAULT_Q = 4093
 RAND_LB = 1
 RAND_UB = 16
 parameters = [{"n":16, "m":608, "q":251}, {"n":20, "m":800, "q":509}, {"n":256, "m":9728, "q":4093}, {"n":320, "m":12800, "q":8191}] # Users should only modify the parameters here in this line and the next line to accomplish their experiments. 
-procedures = [("Setup", lambda p, j:Setup(p, j), 1, 1), ("KeyGen", lambda p, j:KeyGen(p, j), 10, 100), ("Authorize", lambda p, j:Authorize(p, j), 1, 1), ("Encrypt", lambda p, j:Encrypt(p, j), 100, 1000), ("Trapdoor", lambda p, j:Trapdoor(p, j), 100, 1000), ("Test", lambda p, j:Test(p, j), 100, 1000)]
+procedures = [("Setup", lambda p, j:Setup(p, j), 1, 10), ("KeyGen", lambda p, j:KeyGen(p, j), 10, 100), ("Authorize", lambda p, j:Authorize(p, j), 1, 1), ("Encrypt", lambda p, j:Encrypt(p, j), 100, 1000), ("Trapdoor", lambda p, j:Trapdoor(p, j), 100, 1000), ("Test", lambda p, j:Test(p, j), 100, 1000)]
 
 
 # Class #
