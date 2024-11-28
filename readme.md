@@ -43,7 +43,7 @@
 
 ## Citation
 
-This paper is named ``Post-Quantum Searchable Encryption Supporting User-Authorization for Outsourced Data Management``. 
+This paper is entitled ``Post-Quantum Searchable Encryption Supporting User-Authorization for Outsourced Data Management``. 
 
 Please use the following BibTeX for citations. 
 
