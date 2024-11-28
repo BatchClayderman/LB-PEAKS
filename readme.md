@@ -37,6 +37,24 @@
 
 2) The commandline parameters will be appended to the parameter list specified by the user within the script. 
 
-3) The parameters n, m, and q should be positive integers that greater than 1. 
+3) The parameters n, m, and q should be positive integers that are greater than 1. 
 
 4) The parameters n and m should meet the requirement that "2n | m". Otherwise, they will be set to their default values respectively. 
+
+## Citation
+
+This paper is named ``Lattice-based Public Key Encryption with Aorized Keyword Search: Construction, Implementation, and Applications`` at first. 
+
+Subsequently, it is named ``Post-Quantum Searchable Encryption Supporting User-Authorization for Outsourced Data Management``. 
+
+Please use the following BibTeX for citations. 
+
+```
+@inproceedings{xu2024post,
+  title={Post-Quantum Searchable Encryption Supporting User-Authorization for Outsourced Data Management},
+  author={Xu, Shiyuan and Cao, Yibo and Chen, Xue and Guo, Yu and Yang, Yuer and Guo, Fangda and Yiu, Siu-Ming},
+  booktitle={Proceedings of the 33rd ACM International Conference on Information and Knowledge Management},
+  pages={2702--2711},
+  year={2024}
+}
+```
