@@ -1,6 +1,6 @@
 # LB-PEAKS
 
-"LB-PEAKS.py": A Python script for implementing LB-PEAKS. 
+"LB-PEAKS.py": This is the official implementation of the LB-PEAKS scheme in Python programming language. 
 
 ## Option
 
@@ -43,7 +43,9 @@
 
 ## Citation
 
-This paper is entitled ``Post-Quantum Searchable Encryption Supporting User-Authorization for Outsourced Data Management``. 
+This paper is named ``Lattice-based Public Key Encryption with Aorized Keyword Search: Construction, Implementation, and Applications`` at first. 
+
+Subsequently, it is named ``Post-Quantum Searchable Encryption Supporting User-Authorization for Outsourced Data Management``. 
 
 Please use the following BibTeX for citations. 
 
