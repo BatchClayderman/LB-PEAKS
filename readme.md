@@ -43,9 +43,18 @@
 
 ## Citation
 
-This paper is named ``Lattice-based Public Key Encryption with Aorized Keyword Search: Construction, Implementation, and Applications`` at first. 
+Initially, this paper is entitled ``Lattice-based Public Key Encryption with Aorized Keyword Search: Construction, Implementation, and Applications`` whose BibTeX is as follows. 
 
-Subsequently, it is named ``Post-Quantum Searchable Encryption Supporting User-Authorization for Outsourced Data Management``. 
+```
+@article{xu2023lattice,
+  title={Lattice-based Public Key Encryption with Authorized Keyword Search: Construction, Implementation, and Applications},
+  author={Xu, Shiyuan and Cao, Yibo and Chen, Xue and Guo, Yu and Yang, Yuer and Guo, Fangda and Yiu, Siu-Ming},
+  journal={Cryptology ePrint Archive},
+  year={2023}
+}
+```
+
+Subsequently, it is entitled ``Post-Quantum Searchable Encryption Supporting User-Authorization for Outsourced Data Management``. 
 
 Please use the following BibTeX for citations. 
 
