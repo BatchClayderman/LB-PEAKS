@@ -1,6 +1,6 @@
 # LB-PEAKS
 
-"LB-PEAKS.py": This is the official implementation of the LB-PEAKS scheme in Python programming language. 
+"LB-PEAKS.py": This is the official implementation of the LB-PEAKS scheme in (``Post-Quantum Searchable Encryption Supporting User-Authorization for Outsourced Data Management``) Python programming language. 
 
 ## Option
 
