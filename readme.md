@@ -6,9 +6,9 @@ This repository is a part of the [cryptography schemes](https://github.com/Batch
 
 ## Option
 
-- [/n|-n|n]: Specify that the following option is the value of n (default: 256). 
-- [/m|-m|m]: Specify that the following option is the value of m (default: 9728). 
-- [/q|-q|q]: Specify that the following option is the value of q (default: 4093). 
+- [/n|-n|n]: Specify that the following option is the value of $n$ (default: $256$). 
+- [/m|-m|m]: Specify that the following option is the value of $m$ (default: $9728$). 
+- [/q|-q|q]: Specify that the following option is the value of $q$ (default: $4093$). 
 - [/h|-h|h|/help|--help|help]: Show this help information. 
 
 ## Usage
