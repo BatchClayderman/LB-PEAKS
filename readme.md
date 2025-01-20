@@ -13,19 +13,19 @@ This repository is a part of the [cryptography schemes](https://github.com/Batch
 
 ## Usage
 
-- python "LB-PEAKS.py" [/n|-n|n] n [/m|-m|m] m [/q|-q|q] q
-- python "LB-PEAKS.py" [/h|-h|h|/help|--help|help]
+- ``python "LB-PEAKS.py" [/n|-n|n] n [/m|-m|m] m [/q|-q|q] q``
+- ``python "LB-PEAKS.py" [/h|-h|h|/help|--help|help]``
 
 ## Example
 
-- python "LB-PEAKS.py"
-- python "LB-PEAKS.py" /n 256 /m 9728 /q 4093
-- python "LB-PEAKS.py" --help
+- ``python "LB-PEAKS.py"``
+- ``python "LB-PEAKS.py" /n 256 /m 9728 /q 4093``
+- ``python "LB-PEAKS.py" --help``
 
 ## Exit Code
-- EXIT_SUCCESS ($0$): The Python script finished successfully. 
-- EXIT_FAILURE ($1$): The Python script finished not passing all the verifications. 
-- EOF ($-1$): The Python script received unrecognized commandline options. 
+- ``EXIT_SUCCESS`` ($0$): The Python script finished successfully. 
+- ``EXIT_FAILURE`` ($1$): The Python script finished not passing all the verifications. 
+- ``EOF`` ($-1$): The Python script received unrecognized commandline options. 
 
 ## Note
 
